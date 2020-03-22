@@ -10,6 +10,8 @@ RUN set -eux \
 
 # http
 EXPOSE 8088
+# ws
+EXPOSE 8188
 # admin
 EXPOSE 7088
 
