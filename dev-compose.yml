@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  janus:
+    image: janus
+    ports:
+      - 8088:8088
+      - 8188:8188
+      - 7088:7088
+
+  web:
+    image: bearstech/nginx
+    volumes:
+      - ./web:/var/www/html
+    ports:
+      - 8000:8000
