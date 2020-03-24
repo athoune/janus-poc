@@ -2,6 +2,46 @@ let mixer = null;
 let webrtcUp = false;
 let janus = null;
 
+class AudioBridge {
+  constructor(pluginHandle) {
+    this.handle = pluginHandle;
+  }
+  create(args) {
+    args.request = "create";
+    let that = this;
+    return new Promise((resolve, reject) => {
+      that.handle.send({
+        message: args,
+        error: reject,
+        success: resolve
+      });
+    });
+  }
+  changeroom(args) {
+    args.request = "changeroom";
+    let that = this;
+    return new Promise((resolve, reject) => {
+      that.handle.send({
+        message: args,
+        error: reject,
+        success: resolve
+      });
+    });
+  }
+  join(args) {
+    args.request = "join";
+    let that = this;
+    return new Promise((resolve, reject) => {
+      that.handle.send({
+        message: args,
+        error: reject,
+        success: resolve
+      });
+    });
+  }
+}
+
+
 Janus.init({
   debug: "all",
   dependencies: Janus.useDefaultDependencies(), // or: Janus.useOldDependencies() to get the behaviour of previous Janus versions
@@ -22,22 +62,15 @@ Janus.init({
             mixer = pluginHandle;
             console.log("Plugin attached", mixer.getPlugin(), mixer.getId());
             console.dir("mixer", mixer);
-            mixer.send({
-              message: {
-                request: "create",
-                permanent: false,
-                record: false
-              },
-              error: cause => {
-                console.log(cause);
-              },
-              onmessage: (msg, jsep) => {
-                console.log("send message", msg, jsep);
-              },
-              success: (msg) => {
-                console.dir("success", msg);
-                // TODO
-              }
+            let audiobridge = new AudioBridge(pluginHandle);
+            audiobridge.create({permanent: false, record: false}).then(result => {
+              console.log(result);
+              return audiobridge.join({room: result.room});
+            },
+            error => {
+              console.log(error);
+            }).then(result => {
+              console.log(result);
             });
           },
           slowLink: () => {
