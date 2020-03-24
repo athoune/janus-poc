@@ -21,28 +21,40 @@ Janus.init({
             // Plugin attached! 'pluginHandle' is our handle
             mixer = pluginHandle;
             console.log("Plugin attached", mixer.getPlugin(), mixer.getId());
+            console.dir("mixer", mixer);
             mixer.send({
               message: {
                 request: "create",
                 permanent: false,
                 record: false
+              },
+              error: cause => {
+                console.log(cause);
+              },
+              onmessage: (msg, jsep) => {
+                console.log("send message", msg, jsep);
+              },
+              success: (msg) => {
+                console.dir("success", msg);
+                // TODO
               }
             });
           },
           slowLink: () => {
-            console.log(arguments);
+            console.log("Slow link", arguments);
           },
           error: cause => {
             // Couldn't attach to the plugin
-            console.error(cause);
+            console.log("error", cause);
           },
           consentDialog: on => {
             console.log("consent", on);
           },
           onmessage: (msg, jsep) => {
+            Janus.debug(" ::: Got a message :::");
             // We got a message/event (msg) from the plugin
             // If jsep is not null, this involves a WebRTC negotiation
-            console.dir(msg);
+            console.log("message", msg);
             let event = msg.audiobridge;
             if (event != undefined && event != null) {
               switch (event) {
@@ -93,6 +105,7 @@ Janus.init({
           },
           onlocalstream: stream => {
             // We have a local stream (getUserMedia worked!) to display
+            console.log("local stream", stream);
           },
           onremotestream: stream => {
             // We have a remote stream (working PeerConnection!) to display
@@ -100,6 +113,7 @@ Janus.init({
               document.getElementById("roomaudio"),
               stream
             );
+            console.log("remote stream", stream);
           },
           oncleanup: () => {
             // PeerConnection with the plugin closed, clean the UI
