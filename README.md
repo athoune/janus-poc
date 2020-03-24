@@ -1,7 +1,9 @@
 Janus POC
 =========
 
-Doing stuff with webrtc.
+Doing stuff with webrtc, serverside and clientside.
+
+Audio room for all.
 
 Licence
 -------
