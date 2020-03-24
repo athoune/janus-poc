@@ -18,6 +18,7 @@ general: {
 	#ws_logging = "err,warn"		# libwebsockets debugging level as a comma separated list of things
 									# to debug, supported values: err, warn, notice, info, debug, parser,
 									# header, ext, client, latency, user, count (plus 'none' and 'all')
+	ws_logging = "err,warn,notice"
 	#ws_acl = "127.,192.168.0."		# Only allow requests coming from this comma separated list of addresses
 }
 

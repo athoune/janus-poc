@@ -32,6 +32,8 @@ general: {
 	#events = false					# Whether events should be sent to event
 									# handlers (default is yes)
 	events = true
+	record = false
+	sampling_rate = 16000
 }
 
 room-1234: {
