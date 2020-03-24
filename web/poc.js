@@ -1,5 +1,6 @@
 let mixer = null;
 let webrtcUp = false;
+let janus = null;
 
 Janus.init({
   debug: "all",
@@ -10,10 +11,8 @@ Janus.init({
       console.log("oups");
       return;
     }
-    let janus = new Janus({
-      server: [
-        //"ws://localhost:8188/",
-        "http://localhost:8088/janus"],
+    janus = new Janus({
+      server: ["ws://localhost:8188/", "http://localhost:8088/janus"],
       success: () => {
         console.log("session id", janus.getSessionId());
         janus.attach({
