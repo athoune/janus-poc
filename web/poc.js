@@ -108,11 +108,24 @@ function bootstrap(servers, onsuccess, onmessage) {
 bootstrap(
   ["ws://localhost:8188/", "http://localhost:8088/janus"],
   audiobridge => {
+    let room = window.location.hash;
+    if(room != "") {
+      room = Number(room.substring(1));
+      if (isNaN(room)) {
+        // Room is invalid, lets reset it
+        room = "";
+      }
+    }
+    console.log("Hash room", room);
+    if(room == "") {
     audiobridge
       .create({ permanent: false, record: false })
       .then(
         result => {
           console.log(result);
+          let l = document.location;
+          l.hash = `#${result.room}`;
+          window.history.addUrl(l);
           return audiobridge.join({ room: result.room });
         },
         error => {
@@ -122,6 +135,9 @@ bootstrap(
       .then(result => {
         console.log(result);
       });
+    } else {
+      audiobridge.join({ room: room });
+    }
   },
   (msg, jsep) => {
     // We got a message/event (msg) from the plugin
