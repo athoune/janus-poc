@@ -46,7 +46,7 @@ function init(servers) {
       return;
     }
     Janus.init({
-      debug: true,
+      debug: false,
       dependencies: Janus.useDefaultDependencies(), // or: Janus.useOldDependencies() to get the behaviour of previous Janus versions
       callback: () => {
         janus = new Janus({
