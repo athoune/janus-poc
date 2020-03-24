@@ -31,6 +31,7 @@ general: {
 									# if this key is provided in the request
 	#events = false					# Whether events should be sent to event
 									# handlers (default is yes)
+	events = true
 }
 
 room-1234: {

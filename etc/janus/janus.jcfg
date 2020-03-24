@@ -153,7 +153,7 @@ media: {
 nat: {
 	#stun_server = "stun.voip.eutelia.it"
 	stun_server = "stun.freeswitch.org" # Stolen here : https://gist.github.com/mondain/b0ec1cf5f60ae726202e
-	#stun_port = 3478
+	stun_port = 3478
 	nice_debug = false
 	#full_trickle = true
 	#ice_lite = true
