@@ -125,7 +125,7 @@ bootstrap(
           console.log(result);
           let l = document.location;
           l.hash = `#${result.room}`;
-          window.history.addUrl(l);
+          window.history.pushState({}, 'room', l);
           return audiobridge.join({ room: result.room });
         },
         error => {
