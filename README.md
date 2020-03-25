@@ -20,7 +20,7 @@ Steal the js libraries
 
     make steal-janus-js-lib
 
-Open the main page : http://localhost:8000
+Open the main page : http://localhost
 
 
 Licence

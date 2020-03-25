@@ -1,16 +1,27 @@
 version: "3"
 
 services:
+  traefik:
+    image: bearstech/traefik-dev
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - janus
+      - web
+    ports:
+      - 80:80
+
   janus:
     image: janus
-    ports:
-      - 8088:8088
-      - 8188:8188
-      - 7088:7088
+    labels:
+      - traefik.http.port=8088
+      - traefik.http.frontend.rule=Host:localhost;Path:/janus
+      - traefik.ws.port=8188
+      - traefik.ws.frontend.rule=Host:localhost;PathPrefixStrip:/ws
 
   web:
     image: bearstech/nginx
     volumes:
       - ./web:/var/www/html
-    ports:
-      - 8000:8000
+    labels:
+      - traefik.frontend.rule=Host:localhost

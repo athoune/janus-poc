@@ -106,7 +106,7 @@ function bootstrap(servers, onsuccess, onmessage) {
 }
 
 bootstrap(
-  ["ws://localhost:8188/", "http://localhost:8088/janus"],
+  ["ws://localhost/ws", "http://localhost/janus"],
   audiobridge => {
     let room = window.location.hash;
     if(room != "") {
