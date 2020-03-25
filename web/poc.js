@@ -149,6 +149,9 @@ bootstrap(
           );
           r.appendChild(li);
           document.getElementById("room_name").value = "";
+          l.hash = `#${result.room}`;
+          window.history.pushState({}, "room", l);
+          return audiobridge.join({ room: result.room });
         });
     };
     audiobridge.list({}).then(result => {
