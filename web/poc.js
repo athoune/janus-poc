@@ -35,6 +35,28 @@ class AudioBridge {
       });
     });
   }
+  list(args) {
+    args.request = "list";
+    let that = this;
+    return new Promise((resolve, reject) => {
+      that.handle.send({
+        message: args,
+        error: reject,
+        success: resolve
+      });
+    });
+  }
+  exists(args) {
+    args.request = "exists";
+    let that = this;
+    return new Promise((resolve, reject) => {
+      that.handle.send({
+        message: args,
+        error: reject,
+        success: resolve
+      });
+    });
+  }
 }
 
 // Prepare a Janus instance
@@ -63,6 +85,7 @@ function init(servers) {
 
 let mixer = null;
 let webrtcUp = false;
+let rooms = Array();
 
 function bootstrap(servers, onsuccess, onmessage) {
   init(servers).then(janus => {
@@ -108,33 +131,64 @@ function bootstrap(servers, onsuccess, onmessage) {
 bootstrap(
   ["ws://localhost/ws", "http://localhost/janus"],
   audiobridge => {
+    let r = document.getElementById("rooms");
     let room = window.location.hash;
-    if(room != "") {
+    let l = document.location;
+    document.getElementById("room_new").onclick = () => {
+      audiobridge
+        .create({
+          permanent: false,
+          record: false,
+          description: document.getElementById("room_name").value
+        })
+        .then(result => {
+          console.log("room created", result);
+          let li = document.createElement("li");
+          li.appendChild(
+            document.createTextNode(document.getElementById("room_name").value)
+          );
+          r.appendChild(li);
+          document.getElementById("room_name").value = "";
+        });
+    };
+    audiobridge.list({}).then(result => {
+      console.log("rooms", result);
+      rooms = result.list;
+      rooms.forEach(room => {
+        console.log("room", room);
+        let li = document.createElement("li");
+        li.appendChild(document.createTextNode(room.description));
+        r.appendChild(li);
+      });
+    });
+    if (room != "") {
       room = Number(room.substring(1));
       if (isNaN(room)) {
         // Room is invalid, lets reset it
         room = "";
+        l.hash = "";
+        window.history.pushState({}, "rooms", l);
       }
     }
     console.log("Hash room", room);
-    if(room == "") {
-    audiobridge
-      .create({ permanent: false, record: false })
-      .then(
-        result => {
+    if (room == "") {
+      audiobridge
+        .create({ permanent: false, record: false })
+        .then(
+          result => {
+            console.log(result);
+            let l = document.location;
+            l.hash = `#${result.room}`;
+            window.history.pushState({}, "room", l);
+            return audiobridge.join({ room: result.room });
+          },
+          error => {
+            console.log(error);
+          }
+        )
+        .then(result => {
           console.log(result);
-          let l = document.location;
-          l.hash = `#${result.room}`;
-          window.history.pushState({}, 'room', l);
-          return audiobridge.join({ room: result.room });
-        },
-        error => {
-          console.log(error);
-        }
-      )
-      .then(result => {
-        console.log(result);
-      });
+        });
     } else {
       audiobridge.join({ room: room });
     }
