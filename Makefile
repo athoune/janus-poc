@@ -1,6 +1,6 @@
 
 janus-image:
-	docker build -t janus .
+	docker build -t janus -f Dockerfile.janus .
 
 run:
 	docker run --rm \
