@@ -138,7 +138,7 @@ bootstrap(
   [
     `${window.location.protocol === "http:" ? "ws" : "wss"}://${
       window.location.hostname
-    }/ws`,
+    }/`,
     `${window.location.protocol === "http:" ? "http" : "https"}://${
       window.location.hostname
     }/janus`
