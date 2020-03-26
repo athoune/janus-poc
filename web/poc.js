@@ -129,7 +129,14 @@ function bootstrap(servers, onsuccess, onmessage) {
 }
 
 bootstrap(
-  [`${window.location.protocol === 'http:' ? 'ws': 'wss'}://${window.location.hostname}/ws`, `${window.location.protocol === 'http:' ? 'http': 'https'}://${window.location.hostname}/janus`],
+  [
+    `${window.location.protocol === "http:" ? "ws" : "wss"}://${
+      window.location.hostname
+    }/ws`,
+    `${window.location.protocol === "http:" ? "http" : "https"}://${
+      window.location.hostname
+    }/janus`
+  ],
   audiobridge => {
     let r = document.getElementById("rooms");
     let room = window.location.hash;
