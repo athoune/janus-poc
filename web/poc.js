@@ -123,6 +123,12 @@ function bootstrap(servers, onsuccess, onmessage) {
       detached: () => {
         // Connection with the plugin closed, get rid of its features
         // The plugin handle is not valid anymore
+      },
+      ondataopen: data => {
+        console.log("Data is open");
+      },
+      ondata: data => {
+        console.log("Data received");
       }
     });
   });
@@ -217,7 +223,9 @@ bootstrap(
               webrtcUp = true;
               mixer.createOffer({
                 media: {
-                  video: false
+                  audio: true,
+                  video: false,
+                  data: true
                 },
                 success: jsep => {
                   mixer.send({
