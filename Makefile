@@ -1,12 +1,12 @@
+default: dev
+
+images: janus-image nginx-image
 
 janus-image:
 	docker build -t janus -f Dockerfile.janus .
 
-run:
-	docker run --rm \
-		-p 8088:8088 \
-		-p 7088:7088 \
-	janus
+nginx-image:
+	docker build -t janus-web -f Dockerfile.nginx .
 
 steal-janus-js-lib:
 	mkdir -p web/js
