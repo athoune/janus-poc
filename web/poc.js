@@ -1,3 +1,8 @@
+import { showroom } from '/js/modules/rooms.js';
+
+
+showroom("Beuha");
+
 class AudioBridge {
   constructor(pluginHandle) {
     this.handle = pluginHandle;
