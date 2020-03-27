@@ -15,13 +15,13 @@ services:
     image: janus
     labels:
       traefik.http.port: 8088
-      traefik.http.frontend.rule: Host:localhost;Path:/janus
+      traefik.http.frontend.rule: Host:${DOMAIN};Path:/janus
       traefik.ws.port: 8188
-      traefik.ws.frontend.rule: Host:localhost;Headers:Upgrade,websocket
+      traefik.ws.frontend.rule: Host:${DOMAIN};Headers:Upgrade,websocket
 
   web:
     image: bearstech/nginx
     volumes:
       - ./web:/var/www/html
     labels:
-      traefik.frontend.rule: Host:localhost
+      traefik.frontend.rule: Host:${DOMAIN}
