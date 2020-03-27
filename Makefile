@@ -17,7 +17,7 @@ steal-janus-js-lib:
 	docker cp janus-poc_janus_1:/usr/share/javascript/janus web/js/janus
 
 dev:
-	docker-compose -f dev-compose.yml up -d
+	docker-compose -f dev-compose.yml up -d --remove-orphans
 
 down:
 	docker-compose -f dev-compose.yml down
