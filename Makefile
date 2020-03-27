@@ -2,6 +2,10 @@ default: dev
 
 images: janus-image nginx-image
 
+pull:
+	docker pull bearstech/nginx
+	docker pull bearstech/debian:buster
+
 janus-image:
 	docker build -t janus -f Dockerfile.janus .
 
