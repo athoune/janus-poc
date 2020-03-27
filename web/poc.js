@@ -1,7 +1,12 @@
-import { showroom } from '/js/modules/rooms.js';
+import '/js/modules/janus.js';
+import '/js/modules/rooms.js';
 
-
-showroom("Beuha");
+let app = new Vue({
+  el: '#app',
+  data: {
+    rooms: [],
+  },
+});
 
 class AudioBridge {
   constructor(pluginHandle) {
