@@ -1,104 +1,22 @@
 import '/js/modules/janus.js';
 import '/js/modules/rooms.js';
+import { AudioBridge } from '/js/audiobridge.js';
+import { newJanus } from '/js/init.js';
 
 let app = new Vue({
   el: '#app',
   data: {
     rooms: [],
+    age: 42,
   },
 });
-
-class AudioBridge {
-  constructor(pluginHandle) {
-    this.handle = pluginHandle;
-  }
-  create(args) {
-    args.request = "create";
-    let that = this;
-    return new Promise((resolve, reject) => {
-      that.handle.send({
-        message: args,
-        error: reject,
-        success: resolve
-      });
-    });
-  }
-  changeroom(args) {
-    args.request = "changeroom";
-    let that = this;
-    return new Promise((resolve, reject) => {
-      that.handle.send({
-        message: args,
-        error: reject,
-        success: resolve
-      });
-    });
-  }
-  join(args) {
-    args.request = "join";
-    let that = this;
-    return new Promise((resolve, reject) => {
-      that.handle.send({
-        message: args,
-        error: reject,
-        success: resolve
-      });
-    });
-  }
-  list(args) {
-    args.request = "list";
-    let that = this;
-    return new Promise((resolve, reject) => {
-      that.handle.send({
-        message: args,
-        error: reject,
-        success: resolve
-      });
-    });
-  }
-  exists(args) {
-    args.request = "exists";
-    let that = this;
-    return new Promise((resolve, reject) => {
-      that.handle.send({
-        message: args,
-        error: reject,
-        success: resolve
-      });
-    });
-  }
-}
-
-// Prepare a Janus instance
-function init(servers) {
-  return new Promise((resolve, reject) => {
-    // Make sure the browser supports WebRTC
-    if (!Janus.isWebrtcSupported()) {
-      reject(Error("Webrtc unavailable"));
-      return;
-    }
-    Janus.init({
-      debug: false,
-      dependencies: Janus.useDefaultDependencies(), // or: Janus.useOldDependencies() to get the behaviour of previous Janus versions
-      callback: () => {
-        janus = new Janus({
-          server: servers,
-          success: () => {
-            resolve(janus);
-          },
-          error: reject
-        });
-      }
-    });
-  });
-}
 
 let mixer = null;
 let webrtcUp = false;
 let rooms = Array();
 
 function bootstrap(servers, onsuccess, onmessage) {
-  init(servers).then(janus => {
+  newJanus(servers).then(janus => {
     janus.attach({
       plugin: "janus.plugin.audiobridge",
       success: pluginHandle => {
