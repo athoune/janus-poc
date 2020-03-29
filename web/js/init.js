@@ -1,3 +1,4 @@
+import { AudioBridge } from "/js/audiobridge.js";
 
 // Prepare a Janus instance
 export function newJanus(servers) {
@@ -19,6 +20,69 @@ export function newJanus(servers) {
           error: reject
         });
       }
+    });
+  });
+}
+
+export class AudioBridgeBase {
+  constructor(mixer) {
+    this.mixer = mixer;
+    this.audiobridge = new AudioBridge(mixer);
+    this.webrtcUp = false;
+  }
+  onmessage(msg, jesp) {
+      console.log(msg, jesp);
+  }
+}
+
+export function audiobridge(servers, bridge) {
+    let ab = null;
+
+  return new Promise((resolve, reject) => {
+    newJanus(servers).then(janus => {
+      janus.attach({
+        plugin: "janus.plugin.audiobridge",
+        success: pluginHandle => {
+            ab = new bridge(pluginHandle);
+            resolve(ab);
+        },
+        onmessage: (msg, jsep) => {
+            ab.onmessage(msg, jsep);
+        },
+        slowLink: () => {
+          console.log("Slow link", arguments);
+        },
+        error: cause => {
+          // Couldn't attach to the plugin
+          console.log("error", cause);
+        },
+        consentDialog: on => {
+          console.log("consent", on);
+        },
+        onlocalstream: stream => {
+          // We have a local stream (getUserMedia worked!) to display
+          console.log("local stream", stream);
+        },
+        onremotestream: stream => {
+          // We have a remote stream (working PeerConnection!) to display
+          Janus.attachMediaStream(document.getElementById("roomaudio"), stream);
+          console.log("remote stream", stream);
+        },
+        oncleanup: () => {
+          // PeerConnection with the plugin closed, clean the UI
+          // The plugin handle is still valid so we can create a new one
+        },
+        detached: () => {
+          // Connection with the plugin closed, get rid of its features
+          // The plugin handle is not valid anymore
+        },
+        ondataopen: data => {
+          console.log("Data is open");
+        },
+        ondata: data => {
+          console.log("Data received");
+        }
+      });
     });
   });
 }

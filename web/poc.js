@@ -1,7 +1,6 @@
 import '/js/modules/janus.js';
 import '/js/modules/rooms.js';
-import { AudioBridge } from '/js/audiobridge.js';
-import { newJanus } from '/js/init.js';
+import { audiobridge, AudioBridgeBase } from '/js/init.js';
 
 let app = new Vue({
   el: '#app',
@@ -11,72 +10,15 @@ let app = new Vue({
   },
 });
 
-let mixer = null;
-let webrtcUp = false;
-let rooms = Array();
-
-function bootstrap(servers, onsuccess, onmessage) {
-  newJanus(servers).then(janus => {
-    janus.attach({
-      plugin: "janus.plugin.audiobridge",
-      success: pluginHandle => {
-        mixer = pluginHandle;
-        let audiobridge = new AudioBridge(pluginHandle);
-        onsuccess(audiobridge);
-      },
-      onmessage: onmessage,
-      slowLink: () => {
-        console.log("Slow link", arguments);
-      },
-      error: cause => {
-        // Couldn't attach to the plugin
-        console.log("error", cause);
-      },
-      consentDialog: on => {
-        console.log("consent", on);
-      },
-      onlocalstream: stream => {
-        // We have a local stream (getUserMedia worked!) to display
-        console.log("local stream", stream);
-      },
-      onremotestream: stream => {
-        // We have a remote stream (working PeerConnection!) to display
-        Janus.attachMediaStream(document.getElementById("roomaudio"), stream);
-        console.log("remote stream", stream);
-      },
-      oncleanup: () => {
-        // PeerConnection with the plugin closed, clean the UI
-        // The plugin handle is still valid so we can create a new one
-      },
-      detached: () => {
-        // Connection with the plugin closed, get rid of its features
-        // The plugin handle is not valid anymore
-      },
-      ondataopen: data => {
-        console.log("Data is open");
-      },
-      ondata: data => {
-        console.log("Data received");
-      }
-    });
-  });
-}
-
-bootstrap(
-  [
-    `${window.location.protocol === "http:" ? "ws" : "wss"}://${
-      window.location.hostname
-    }/`,
-    `${window.location.protocol === "http:" ? "http" : "https"}://${
-      window.location.hostname
-    }/janus`
-  ],
-  audiobridge => {
+class MyAudioBridge extends AudioBridgeBase {
+  constructor(mixer) {
+    super(mixer);
     let r = document.getElementById("rooms");
     let room = window.location.hash;
     let l = document.location;
+    let that = this;
     document.getElementById("room_new").onclick = () => {
-      audiobridge
+      that.audiobridge
         .create({
           permanent: false,
           record: false,
@@ -95,7 +37,7 @@ bootstrap(
           return audiobridge.join({ room: result.room });
         });
     };
-    audiobridge.list({}).then(result => {
+    this.audiobridge.list({}).then(result => {
       console.log("rooms", result);
       rooms = result.list;
       rooms.forEach(room => {
@@ -134,29 +76,30 @@ bootstrap(
           console.log(result);
         });
     } else {
-      audiobridge.join({ room: room });
+      this.audiobridge.join({ room: room });
     }
-  },
-  (msg, jsep) => {
+  }
+  onmessage(msg, jsep) {
     // We got a message/event (msg) from the plugin
     // If jsep is not null, this involves a WebRTC negotiation
     console.log("message", msg);
     let event = msg.audiobridge;
+    let that = this;
     if (event != undefined && event != null) {
       switch (event) {
         case "joined":
           if (msg.id) {
             console.log(`Room ${msg.room} with id {msg.id}`);
-            if (!webrtcUp) {
-              webrtcUp = true;
-              mixer.createOffer({
+            if (!this.webrtcUp) {
+              this.webrtcUp = true;
+              this.mixer.createOffer({
                 media: {
                   audio: true,
                   video: false,
                   data: true
                 },
                 success: jsep => {
-                  mixer.send({
+                  that.mixer.send({
                     message: {
                       request: "configure",
                       muted: false
@@ -185,7 +128,21 @@ bootstrap(
     }
     if (jsep !== undefined && jsep !== null) {
       console.log(jsep);
-      mixer.handleRemoteJsep({ jsep: jsep });
+      this.mixer.handleRemoteJsep({ jsep: jsep });
     }
   }
-);
+}
+
+audiobridge(
+  [
+    `${window.location.protocol === "http:" ? "ws" : "wss"}://${
+      window.location.hostname
+    }/`,
+    `${window.location.protocol === "http:" ? "http" : "https"}://${
+      window.location.hostname
+    }/janus`
+  ],
+  MyAudioBridge
+).then(ab => {
+  console.log("audiobridge is ready: ", ab);
+});
