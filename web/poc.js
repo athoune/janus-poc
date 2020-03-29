@@ -2,12 +2,13 @@ import '/js/modules/janus.js';
 import '/js/modules/rooms.js';
 import { audiobridge, AudioBridgeBase } from '/js/init.js';
 
+let data = {
+  rooms: Array,
+};
+
 let app = new Vue({
   el: '#app',
-  data: {
-    rooms: [],
-    age: 42,
-  },
+  data: data,
 });
 
 class MyAudioBridge extends AudioBridgeBase {
@@ -39,13 +40,7 @@ class MyAudioBridge extends AudioBridgeBase {
     };
     this.audiobridge.list({}).then(result => {
       console.log("rooms", result);
-      rooms = result.list;
-      rooms.forEach(room => {
-        console.log("room", room);
-        let li = document.createElement("li");
-        li.appendChild(document.createTextNode(room.description));
-        r.appendChild(li);
-      });
+      data.rooms = result.list;
     });
     if (room != "") {
       room = Number(room.substring(1));

@@ -8,9 +8,9 @@ Vue.component('rooms', {
     template: `<div>
         <h5>Rooms</h5>
         <ul>
-        <room v-for="room in rooms"
-            v-bind:key="room.id"
-            v-bind:name="room.name"
+        <room v-for="room in $root.$data.rooms"
+            v-bind:key="room.room"
+            v-bind:name="room.description"
         ></room>
         </ul>
         </div>`,
