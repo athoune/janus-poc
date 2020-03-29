@@ -6,7 +6,22 @@ const data = {
   rooms: Array,
 };
 
-const routes = [];
+const Home = {
+  template: `<div>
+    Home
+  </div>`,
+};
+
+const routes = [
+  {
+    path: '/room/:id',
+    component: Vue.component('room'), 
+  },
+  {
+    path: '/',
+    component: Home,
+  },
+];
 const router = new VueRouter({
   routes // short for `routes: routes`
 });
