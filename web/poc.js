@@ -2,13 +2,19 @@ import '/js/modules/janus.js';
 import '/js/modules/rooms.js';
 import { audiobridge, AudioBridgeBase } from '/js/init.js';
 
-let data = {
+const data = {
   rooms: Array,
 };
 
-let app = new Vue({
+const routes = [];
+const router = new VueRouter({
+  routes // short for `routes: routes`
+});
+
+const app = new Vue({
   el: '#app',
   data: data,
+  router: router,
 });
 
 class MyAudioBridge extends AudioBridgeBase {
@@ -53,7 +59,7 @@ class MyAudioBridge extends AudioBridgeBase {
     }
     console.log("Hash room", room);
     if (room == "") {
-      audiobridge
+      this.audiobridge
         .create({ permanent: false, record: false })
         .then(
           result => {
@@ -61,7 +67,7 @@ class MyAudioBridge extends AudioBridgeBase {
             let l = document.location;
             l.hash = `#${result.room}`;
             window.history.pushState({}, "room", l);
-            return audiobridge.join({ room: result.room });
+            return that.audiobridge.join({ room: result.room });
           },
           error => {
             console.log(error);
