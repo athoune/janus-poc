@@ -12,8 +12,8 @@ let app = new Vue({
 });
 
 class MyAudioBridge extends AudioBridgeBase {
-  constructor(mixer) {
-    super(mixer);
+  constructor(mixer, audio_id) {
+    super(mixer, audio_id);
     let r = document.getElementById("rooms");
     let room = window.location.hash;
     let l = document.location;
@@ -137,7 +137,6 @@ audiobridge(
       window.location.hostname
     }/janus`
   ],
-  MyAudioBridge
-).then(ab => {
+  MyAudioBridge, 'janus-roomaudio').then(ab => {
   console.log("audiobridge is ready: ", ab);
 });

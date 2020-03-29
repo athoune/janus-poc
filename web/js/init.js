@@ -25,8 +25,9 @@ export function newJanus(servers) {
 }
 
 export class AudioBridgeBase {
-  constructor(mixer) {
+  constructor(mixer, audio_id) {
     this.mixer = mixer;
+    this.audio_id = audio_id;
     this.audiobridge = new AudioBridge(mixer);
     this.webrtcUp = false;
   }
@@ -35,7 +36,7 @@ export class AudioBridgeBase {
   }
 }
 
-export function audiobridge(servers, bridge) {
+export function audiobridge(servers, bridge, audio_id) {
     let ab = null;
 
   return new Promise((resolve, reject) => {
@@ -43,7 +44,7 @@ export function audiobridge(servers, bridge) {
       janus.attach({
         plugin: "janus.plugin.audiobridge",
         success: pluginHandle => {
-            ab = new bridge(pluginHandle);
+            ab = new bridge(pluginHandle, audio_id);
             resolve(ab);
         },
         onmessage: (msg, jsep) => {
@@ -65,7 +66,7 @@ export function audiobridge(servers, bridge) {
         },
         onremotestream: stream => {
           // We have a remote stream (working PeerConnection!) to display
-          Janus.attachMediaStream(document.getElementById("roomaudio"), stream);
+          Janus.attachMediaStream(document.getElementById(ab.audio_id), stream);
           console.log("remote stream", stream);
         },
         oncleanup: () => {
