@@ -16,9 +16,7 @@ const Home = {
 const routes = [
   {
     path: '/room/:id',
-    component: {
-      template: `<div><room></room></div>`
-    }
+    component: Vue.component('room')
   },
   {
     path: '/',
