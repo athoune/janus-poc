@@ -23,5 +23,6 @@ services:
     image: bearstech/nginx
     volumes:
       - ./web:/var/www/html
+      - ./nginx.conf:/etc/nginx/sites-enabled/default
     labels:
       traefik.frontend.rule: Host:${DOMAIN}

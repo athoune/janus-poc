@@ -1,3 +1,4 @@
 FROM bearstech/nginx
 
 COPY web /var/www/html
+COPY nginx.conf /etc/nginx/sites-enabled/default
