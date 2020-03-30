@@ -1,4 +1,4 @@
 {
-    "esversion": 6, // https://en.wikipedia.org/wiki/ECMAScript#6th_Edition_-_ECMAScript_2015
+    "esversion": 6,
     "browser": true
 }
