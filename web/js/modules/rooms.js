@@ -45,27 +45,25 @@ Vue.component("rooms", {
 });
 
 Vue.component("room", {
+  props: ["id"],
   template: `
     <div>
         <h4>Room {{ name }}</h4>
-        {{ $route.params.id }}
+        {{ id }}
     </div>
     `,
   data: () => {
-      return {
-          name: '',
-      }
+    return {
+      name: ""
+    };
   },
   mounted: function() {
-      this.data.name = $route.params.id;
     let ab = this.$root.$data.audiobridge;
+    let that = this;
     ab.create({ permanent: false, record: false })
       .then(
         result => {
           console.log(result);
-          let l = document.location;
-          l.hash = `#${result.room}`;
-          window.history.pushState({}, "room", l);
           return that.audiobridge.join({ room: result.room });
         },
         error => {

@@ -16,7 +16,8 @@ const Home = {
 const routes = [
   {
     path: '/room/:id',
-    component: Vue.component('room')
+    component: Vue.component('room'),
+    props: true
   },
   {
     path: '/',
@@ -28,10 +29,6 @@ const router = new VueRouter({
   routes // short for `routes: routes`
 });
 
-const app = new Vue({
-  data: data,
-  router: router,
-}).$mount('#app');
 
 class MyAudioBridge extends AudioBridgeBase {
   constructor(mixer, audio_id) {
@@ -107,7 +104,13 @@ audiobridge(
       window.location.hostname
     }/janus`
   ],
-  MyAudioBridge, 'janus-roomaudio').then(ab => {
+  MyAudioBridge,
+  "janus-roomaudio"
+).then(ab => {
   console.log("audiobridge is ready: ", ab);
   data.audiobridge = ab.audiobridge;
+  const app = new Vue({
+    data: data,
+    router: router
+  }).$mount("#app");
 });
