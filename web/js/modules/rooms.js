@@ -1,7 +1,7 @@
 Vue.component("room-item", {
   props: ["name", "id"],
   template: `<li>
-    <router-link v-bind:to="'/route/' + id">{{ name }}</router-link>
+    <router-link v-bind:to="'/room/' + id">{{ name }}</router-link>
     </li>`
 });
 
