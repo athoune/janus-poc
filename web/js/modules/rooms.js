@@ -7,7 +7,7 @@ Vue.component("room-item", {
 
 Vue.component("rooms", {
   props: [],
-  template: `<div>
+  template: `<aside style="float: left;">
         <h5>Rooms</h5>
         <input type="text" id="room_name" v-model="room_name" placeholder="room name"/>
         <button v-on:click="newRoom(room_name)">New room</button>
@@ -18,7 +18,7 @@ Vue.component("rooms", {
             v-bind:name="room.description"
         ></room-item>
         </ul>
-        </div>`,
+        </aside>`,
   data: () => {
     return {
       room_name: ""
