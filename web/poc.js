@@ -82,8 +82,10 @@ class MyAudioBridge extends AudioBridgeBase {
           }
           break;
         case "roomchanged":
+          console.log("room changed", msg);
+          break;
         case "destroyed":
-          console.log("room destroyed");
+          console.log("room destroyed", msg);
           break;
         case "event":
       }

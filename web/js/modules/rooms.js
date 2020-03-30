@@ -60,18 +60,12 @@ Vue.component("room", {
   mounted: function() {
     let ab = this.$root.$data.audiobridge;
     let that = this;
-    ab.create({ permanent: false, record: false })
-      .then(
-        result => {
-          console.log(result);
-          return that.audiobridge.join({ room: result.room });
-        },
-        error => {
-          console.log(error);
-        }
-      )
-      .then(result => {
-        console.log(result);
-      });
+    ab.changeroom({ room: this.id }).then(
+      result => {
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 });

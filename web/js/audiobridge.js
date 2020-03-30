@@ -14,7 +14,7 @@ export class AudioBridge {
       });
     });
   }
-  changeroom(args) {
+  changeroom(args) { // it returns nothing, watch for roomchanged event
     args.request = "changeroom";
     let that = this;
     return new Promise((resolve, reject) => {
