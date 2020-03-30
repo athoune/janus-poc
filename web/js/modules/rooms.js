@@ -48,7 +48,7 @@ Vue.component("room", {
   props: ["id"],
   template: `
     <div>
-        <h4>Room {{ name }}</h4>
+        <h4>Room {{ $root.$data.room.name }}</h4>
         {{ id }}
     </div>
     `,
@@ -59,8 +59,13 @@ Vue.component("room", {
   },
   mounted: function() {
     let ab = this.$root.$data.audiobridge;
-    let that = this;
-    ab.changeroom({ room: this.id }).then(
+    const id = parseInt(this.id, 10);
+    if (isNaN(id)) {
+        console.error("This id is not a number : ", this.id);
+        return;
+    }
+    console.log("joining ", id);
+    ab.join({ room: id }).then(
       result => {
       },
       error => {

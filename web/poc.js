@@ -5,6 +5,7 @@ import { audiobridge, AudioBridgeBase } from '/js/init.js';
 const data = {
   rooms: Array,
   participants: Array,
+  room: Object,
 };
 
 const Home = {
@@ -51,7 +52,11 @@ class MyAudioBridge extends AudioBridgeBase {
       switch (event) {
         case "joined":
           if (msg.id) {
-            console.log(`Room ${msg.room} with id {msg.id}`);
+            console.log(`Room ${msg.room} with id ${msg.id}`);
+            data.room = {
+              id: msg.id,
+              name: msg.room
+            };
             if (!this.webrtcUp) {
               this.webrtcUp = true;
               this.mixer.createOffer({
