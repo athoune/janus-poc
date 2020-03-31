@@ -1,38 +1,42 @@
-import '/js/modules/janus.js';
-import '/js/modules/rooms.js';
-import { audiobridge, AudioBridgeBase } from '/js/init.js';
+import "/js/modules/janus.js";
+import "/js/modules/rooms.js";
+import { audiobridge, AudioBridgeBase } from "/js/init.js";
 
-const data = {
-  rooms: Array,
-  participants: Array,
-  room: {
-    name: "",
-    id: "",
-  },
-};
+Vue.use(Vuex);
+
+const store = new Vuex.Store({
+  state: {
+    rooms: Array,
+    participants: Array,
+    audiobridge: Object,
+    room: {
+      name: "",
+      id: ""
+    }
+  }
+});
 
 const Home = {
   template: `<div>
     Home
-  </div>`,
+  </div>`
 };
 
 const routes = [
   {
-    path: '/room/:id',
-    component: Vue.component('room'),
+    path: "/room/:id",
+    component: Vue.component("room"),
     props: true
   },
   {
-    path: '/',
-    component: Home,
-  },
+    path: "/",
+    component: Home
+  }
 ];
 
 const router = new VueRouter({
   routes // short for `routes: routes`
 });
-
 
 class MyAudioBridge extends AudioBridgeBase {
   constructor(mixer, audio_id) {
@@ -42,7 +46,7 @@ class MyAudioBridge extends AudioBridgeBase {
     let that = this;
     this.audiobridge.list({}).then(result => {
       console.log("rooms", result);
-      data.rooms = result.list;
+      store.rooms = result.list;
     });
   }
   onmessage(msg, jsep) {
@@ -56,10 +60,9 @@ class MyAudioBridge extends AudioBridgeBase {
         case "joined":
           if (msg.id) {
             console.log(`Room ${msg.room} with id ${msg.id}`);
-            console.dir(this.app);
-            this.app.room.id = msg.id;
-            this.app.room.name = msg.room;
-            this.app.participants = msg.participants;
+            this.app.$store.room.id = msg.id;
+            this.app.$store.room.name = msg.room;
+            this.app.$store.participants = msg.participants;
             if (!this.webrtcUp) {
               this.webrtcUp = true;
               this.mixer.createOffer({
@@ -118,9 +121,11 @@ audiobridge(
   "janus-roomaudio"
 ).then(ab => {
   console.log("audiobridge is ready: ", ab);
-  data.audiobridge = ab.audiobridge;
+  store.audiobridge = ab.audiobridge;
   ab.app = new Vue({
-    data: data,
+    // provide the store using the "store" option.
+    // this will inject the store instance to all child components.
+    store,
     router: router
   }).$mount("#app");
 });

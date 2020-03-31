@@ -48,14 +48,18 @@ Vue.component("room", {
   props: ["id"],
   template: `
     <div>
-        <h4>Room {{ $root.$data.room.name }}</h4>
+        <h4>Room {{ name }}</h4>
         {{ id }}
     </div>
     `,
   data: () => {
     return {
-      name: ""
     };
+  },
+  computed: {
+    name() {
+      return this.$store.room.name;
+    }
   },
   watch: {
     // call again the method if the route changes
@@ -73,7 +77,7 @@ Vue.component("room", {
         return;
       }
       let r;
-      console.log(this.$root.$data.room.id);
+      console.log(this.$store.room.id);
       if (this.$root.$data.room.id == "") {
         r = ab.join({ room: id });
       } else {
