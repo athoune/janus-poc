@@ -1,4 +1,5 @@
 import "/js/modules/janus.js";
+import "/js/modules/home.js";
 import "/js/modules/rooms.js";
 import "/js/modules/room.js";
 import { audiobridge, AudioBridgeBase } from "/js/init.js";
@@ -17,12 +18,6 @@ const store = new Vuex.Store({
   }
 });
 
-const Home = {
-  template: `<div>
-    Home
-  </div>`
-};
-
 const routes = [
   {
     path: "/room/:id",
@@ -31,7 +26,7 @@ const routes = [
   },
   {
     path: "/",
-    component: Home
+    component: Vue.component("home"),
   }
 ];
 
@@ -115,6 +110,20 @@ class MyAudioBridge extends AudioBridgeBase {
                 break;
             }
           }
+          if (msg.leaving !== undefined) {
+            console.log(
+              "leaving",
+              msg.leaving,
+              app.$store.state.participants,
+              app.$store.state.room.id
+            );
+            if (app.$store.state.room.id == msg.room) {
+              const poz = app.$store.state.participants.find(
+                e => e.id == msg.leaving
+              );
+              app.$store.state.participants.splice(poz, 1);
+            }
+          }
           break;
       }
     }
@@ -140,4 +149,9 @@ audiobridge(
   console.log("audiobridge is ready: ", ab);
   store.state.audiobridge = ab.audiobridge;
   app.$mount("#app");
+  window.addEventListener('beforeunload', (event) => {
+    if (store.state.room.id != "") {
+      ab.audiobridge.leave({});
+    }
+  });
 });
