@@ -34,6 +34,7 @@ Vue.component("room", {
       const id = parseInt(this.id, 10);
       if (isNaN(id)) {
         console.error("This id is not a number : ", this.id);
+        this.$router.push("/");
         return;
       }
       let r;

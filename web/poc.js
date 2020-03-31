@@ -13,7 +13,7 @@ const store = new Vuex.Store({
     room: {
       name: "",
       id: ""
-    },
+    }
   }
 });
 
@@ -107,6 +107,16 @@ class MyAudioBridge extends AudioBridgeBase {
           console.log("room destroyed", msg);
           break;
         case "event":
+          if (msg.error_code !== undefined) {
+            switch (msg.error_code) {
+              case 485: // No such room
+                app.$router.push("/");
+                break;
+              case 491: // Already in this room
+                break;
+            }
+          }
+          break;
       }
     }
     if (jsep !== undefined && jsep !== null) {
