@@ -52,7 +52,7 @@ class MyAudioBridge extends AudioBridgeBase {
     super(mixer, audio_id);
     this.audiobridge.list({}).then(result => {
       console.log("rooms", result);
-      store.rooms = result.list;
+      store.state.rooms = result.list;
     });
   }
   onmessage(msg, jsep) {
@@ -66,9 +66,9 @@ class MyAudioBridge extends AudioBridgeBase {
         case "joined":
           if (msg.id) {
             console.log(`Room ${msg.room} with id ${msg.id}`);
-            this.app.$store.state.room.id = msg.id;
-            this.app.$store.state.room.name = msg.room;
-            this.app.$store.state.articipants = msg.participants;
+            app.$store.state.room.id = msg.id;
+            app.$store.state.room.name = msg.room;
+            app.$store.state.articipants = msg.participants;
             if (!this.webrtcUp) {
               this.webrtcUp = true;
               this.mixer.createOffer({
@@ -100,6 +100,9 @@ class MyAudioBridge extends AudioBridgeBase {
           break;
         case "roomchanged":
           console.log("room changed", msg);
+          app.$store.state.room.id = msg.id;
+          app.$store.state.room.name = msg.room;
+          app.$store.state.articipants = msg.participants;
           break;
         case "destroyed":
           console.log("room destroyed", msg);
