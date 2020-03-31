@@ -32,23 +32,23 @@ export class AudioBridgeBase {
     this.webrtcUp = false;
   }
   onmessage(msg, jesp) {
-      console.log(msg, jesp);
+    console.log(msg, jesp);
   }
 }
 
 export function audiobridge(servers, bridge, audio_id) {
-    let ab = null;
+  let ab = null;
 
   return new Promise((resolve, reject) => {
     newJanus(servers).then(janus => {
       janus.attach({
         plugin: "janus.plugin.audiobridge",
         success: pluginHandle => {
-            ab = new bridge(pluginHandle, audio_id);
-            resolve(ab);
+          ab = new bridge(pluginHandle, audio_id);
+          resolve(ab);
         },
         onmessage: (msg, jsep) => {
-            ab.onmessage(msg, jsep);
+          ab.onmessage(msg, jsep);
         },
         slowLink: () => {
           console.log("Slow link", arguments);
