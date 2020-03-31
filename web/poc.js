@@ -1,234 +1,84 @@
-class AudioBridge {
-  constructor(pluginHandle) {
-    this.handle = pluginHandle;
-  }
-  create(args) {
-    args.request = "create";
-    let that = this;
-    return new Promise((resolve, reject) => {
-      that.handle.send({
-        message: args,
-        error: reject,
-        success: resolve
-      });
-    });
-  }
-  changeroom(args) {
-    args.request = "changeroom";
-    let that = this;
-    return new Promise((resolve, reject) => {
-      that.handle.send({
-        message: args,
-        error: reject,
-        success: resolve
-      });
-    });
-  }
-  join(args) {
-    args.request = "join";
-    let that = this;
-    return new Promise((resolve, reject) => {
-      that.handle.send({
-        message: args,
-        error: reject,
-        success: resolve
-      });
-    });
-  }
-  list(args) {
-    args.request = "list";
-    let that = this;
-    return new Promise((resolve, reject) => {
-      that.handle.send({
-        message: args,
-        error: reject,
-        success: resolve
-      });
-    });
-  }
-  exists(args) {
-    args.request = "exists";
-    let that = this;
-    return new Promise((resolve, reject) => {
-      that.handle.send({
-        message: args,
-        error: reject,
-        success: resolve
-      });
-    });
-  }
-}
+import "/js/modules/janus.js";
+import "/js/modules/rooms.js";
+import { audiobridge, AudioBridgeBase } from "/js/init.js";
 
-// Prepare a Janus instance
-function init(servers) {
-  return new Promise((resolve, reject) => {
-    // Make sure the browser supports WebRTC
-    if (!Janus.isWebrtcSupported()) {
-      reject(Error("Webrtc unavailable"));
-      return;
-    }
-    Janus.init({
-      debug: false,
-      dependencies: Janus.useDefaultDependencies(), // or: Janus.useOldDependencies() to get the behaviour of previous Janus versions
-      callback: () => {
-        janus = new Janus({
-          server: servers,
-          success: () => {
-            resolve(janus);
-          },
-          error: reject
-        });
-      }
-    });
-  });
-}
+Vue.use(Vuex);
 
-let mixer = null;
-let webrtcUp = false;
-let rooms = Array();
+const store = new Vuex.Store({
+  state: {
+    rooms: [],
+    participants: [],
+    audiobridge: [],
+    room: {
+      name: "",
+      id: ""
+    },
+  }
+});
 
-function bootstrap(servers, onsuccess, onmessage) {
-  init(servers).then(janus => {
-    janus.attach({
-      plugin: "janus.plugin.audiobridge",
-      success: pluginHandle => {
-        mixer = pluginHandle;
-        let audiobridge = new AudioBridge(pluginHandle);
-        onsuccess(audiobridge);
-      },
-      onmessage: onmessage,
-      slowLink: () => {
-        console.log("Slow link", arguments);
-      },
-      error: cause => {
-        // Couldn't attach to the plugin
-        console.log("error", cause);
-      },
-      consentDialog: on => {
-        console.log("consent", on);
-      },
-      onlocalstream: stream => {
-        // We have a local stream (getUserMedia worked!) to display
-        console.log("local stream", stream);
-      },
-      onremotestream: stream => {
-        // We have a remote stream (working PeerConnection!) to display
-        Janus.attachMediaStream(document.getElementById("roomaudio"), stream);
-        console.log("remote stream", stream);
-      },
-      oncleanup: () => {
-        // PeerConnection with the plugin closed, clean the UI
-        // The plugin handle is still valid so we can create a new one
-      },
-      detached: () => {
-        // Connection with the plugin closed, get rid of its features
-        // The plugin handle is not valid anymore
-      },
-      ondataopen: data => {
-        console.log("Data is open");
-      },
-      ondata: data => {
-        console.log("Data received");
-      }
-    });
-  });
-}
+const Home = {
+  template: `<div>
+    Home
+  </div>`
+};
 
-bootstrap(
-  [
-    `${window.location.protocol === "http:" ? "ws" : "wss"}://${
-      window.location.hostname
-    }/`,
-    `${window.location.protocol === "http:" ? "http" : "https"}://${
-      window.location.hostname
-    }/janus`
-  ],
-  audiobridge => {
-    let r = document.getElementById("rooms");
-    let room = window.location.hash;
-    let l = document.location;
-    document.getElementById("room_new").onclick = () => {
-      audiobridge
-        .create({
-          permanent: false,
-          record: false,
-          description: document.getElementById("room_name").value
-        })
-        .then(result => {
-          console.log("room created", result);
-          let li = document.createElement("li");
-          li.appendChild(
-            document.createTextNode(document.getElementById("room_name").value)
-          );
-          r.appendChild(li);
-          document.getElementById("room_name").value = "";
-          l.hash = `#${result.room}`;
-          window.history.pushState({}, "room", l);
-          return audiobridge.join({ room: result.room });
-        });
-    };
-    audiobridge.list({}).then(result => {
-      console.log("rooms", result);
-      rooms = result.list;
-      rooms.forEach(room => {
-        console.log("room", room);
-        let li = document.createElement("li");
-        li.appendChild(document.createTextNode(room.description));
-        r.appendChild(li);
-      });
-    });
-    if (room != "") {
-      room = Number(room.substring(1));
-      if (isNaN(room)) {
-        // Room is invalid, lets reset it
-        room = "";
-        l.hash = "";
-        window.history.pushState({}, "rooms", l);
-      }
-    }
-    console.log("Hash room", room);
-    if (room == "") {
-      audiobridge
-        .create({ permanent: false, record: false })
-        .then(
-          result => {
-            console.log(result);
-            let l = document.location;
-            l.hash = `#${result.room}`;
-            window.history.pushState({}, "room", l);
-            return audiobridge.join({ room: result.room });
-          },
-          error => {
-            console.log(error);
-          }
-        )
-        .then(result => {
-          console.log(result);
-        });
-    } else {
-      audiobridge.join({ room: room });
-    }
+const routes = [
+  {
+    path: "/room/:id",
+    component: Vue.component("room"),
+    props: true
   },
-  (msg, jsep) => {
+  {
+    path: "/",
+    component: Home
+  }
+];
+
+const router = new VueRouter({
+  routes // short for `routes: routes`
+});
+
+const app = new Vue({
+  // provide the store using the "store" option.
+  // this will inject the store instance to all child components.
+  store: store,
+  router: router
+});
+
+console.dir(app.$store);
+
+class MyAudioBridge extends AudioBridgeBase {
+  constructor(mixer, audio_id) {
+    super(mixer, audio_id);
+    this.audiobridge.list({}).then(result => {
+      console.log("rooms", result);
+      store.state.rooms = result.list;
+    });
+  }
+  onmessage(msg, jsep) {
     // We got a message/event (msg) from the plugin
     // If jsep is not null, this involves a WebRTC negotiation
     console.log("message", msg);
     let event = msg.audiobridge;
+    let that = this;
     if (event != undefined && event != null) {
       switch (event) {
         case "joined":
           if (msg.id) {
-            console.log(`Room ${msg.room} with id {msg.id}`);
-            if (!webrtcUp) {
-              webrtcUp = true;
-              mixer.createOffer({
+            console.log(`Room ${msg.room} with id ${msg.id}`);
+            app.$store.state.room.id = msg.id;
+            app.$store.state.room.name = msg.room;
+            app.$store.state.articipants = msg.participants;
+            if (!this.webrtcUp) {
+              this.webrtcUp = true;
+              this.mixer.createOffer({
                 media: {
                   audio: true,
                   video: false,
                   data: true
                 },
                 success: jsep => {
-                  mixer.send({
+                  that.mixer.send({
                     message: {
                       request: "configure",
                       muted: false
@@ -249,15 +99,37 @@ bootstrap(
           }
           break;
         case "roomchanged":
+          console.log("room changed", msg);
+          app.$store.state.room.id = msg.id;
+          app.$store.state.room.name = msg.room;
+          app.$store.state.articipants = msg.participants;
+          break;
         case "destroyed":
-          console.log("room destroyed");
+          console.log("room destroyed", msg);
           break;
         case "event":
       }
     }
     if (jsep !== undefined && jsep !== null) {
       console.log(jsep);
-      mixer.handleRemoteJsep({ jsep: jsep });
+      this.mixer.handleRemoteJsep({ jsep: jsep });
     }
   }
-);
+}
+
+audiobridge(
+  [
+    `${window.location.protocol === "http:" ? "ws" : "wss"}://${
+      window.location.hostname
+    }/`,
+    `${window.location.protocol === "http:" ? "http" : "https"}://${
+      window.location.hostname
+    }/janus`
+  ],
+  MyAudioBridge,
+  "janus-roomaudio"
+).then(ab => {
+  console.log("audiobridge is ready: ", ab);
+  store.state.audiobridge = ab.audiobridge;
+  app.$mount("#app");
+});
