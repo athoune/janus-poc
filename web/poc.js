@@ -45,8 +45,6 @@ const app = new Vue({
   router: router
 });
 
-console.dir(app.$store);
-
 class MyAudioBridge extends AudioBridgeBase {
   constructor(mixer, audio_id) {
     super(mixer, audio_id);
