@@ -50,9 +50,6 @@ console.dir(app.$store);
 class MyAudioBridge extends AudioBridgeBase {
   constructor(mixer, audio_id) {
     super(mixer, audio_id);
-    let r = document.getElementById("rooms");
-    let l = document.location;
-    let that = this;
     this.audiobridge.list({}).then(result => {
       console.log("rooms", result);
       store.rooms = result.list;
