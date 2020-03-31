@@ -6,13 +6,13 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    rooms: Array,
-    participants: Array,
-    audiobridge: Object,
+    rooms: [],
+    participants: [],
+    audiobridge: [],
     room: {
       name: "",
       id: ""
-    }
+    },
   }
 });
 
@@ -38,6 +38,15 @@ const router = new VueRouter({
   routes // short for `routes: routes`
 });
 
+const app = new Vue({
+  // provide the store using the "store" option.
+  // this will inject the store instance to all child components.
+  store: store,
+  router: router
+});
+
+console.dir(app.$store);
+
 class MyAudioBridge extends AudioBridgeBase {
   constructor(mixer, audio_id) {
     super(mixer, audio_id);
@@ -60,9 +69,9 @@ class MyAudioBridge extends AudioBridgeBase {
         case "joined":
           if (msg.id) {
             console.log(`Room ${msg.room} with id ${msg.id}`);
-            this.app.$store.room.id = msg.id;
-            this.app.$store.room.name = msg.room;
-            this.app.$store.participants = msg.participants;
+            this.app.$store.state.room.id = msg.id;
+            this.app.$store.state.room.name = msg.room;
+            this.app.$store.state.articipants = msg.participants;
             if (!this.webrtcUp) {
               this.webrtcUp = true;
               this.mixer.createOffer({
@@ -121,11 +130,6 @@ audiobridge(
   "janus-roomaudio"
 ).then(ab => {
   console.log("audiobridge is ready: ", ab);
-  store.audiobridge = ab.audiobridge;
-  ab.app = new Vue({
-    // provide the store using the "store" option.
-    // this will inject the store instance to all child components.
-    store,
-    router: router
-  }).$mount("#app");
+  store.state.audiobridge = ab.audiobridge;
+  app.$mount("#app");
 });

@@ -12,7 +12,7 @@ Vue.component("rooms", {
         <input type="text" id="room_name" v-model="room_name" placeholder="room name"/>
         <button v-on:click="newRoom(room_name)">New room</button>
         <ul>
-        <room-item v-for="room in $root.$data.rooms"
+        <room-item v-for="room in $store.state.rooms"
             v-bind:id="room.room"
             v-bind:key="room.room"
             v-bind:name="room.description"
@@ -26,14 +26,14 @@ Vue.component("rooms", {
   },
   methods: {
     newRoom: function(name, event) {
-      let ab = this.$root.$data.audiobridge;
+      let ab = this.$store.state.audiobridge;
       ab.create({
         permanent: false,
         record: false,
         description: name
       }).then(result => {
         console.dir(result);
-        this.$root.$data.rooms.push({
+        this.$store.state.rooms.push({
           room: result.room,
           description: name
         });
@@ -58,7 +58,7 @@ Vue.component("room", {
   },
   computed: {
     name() {
-      return this.$store.room.name;
+      return this.$store.state.room.name;
     }
   },
   watch: {
@@ -70,15 +70,15 @@ Vue.component("room", {
   },
   methods: {
     fetchData() {
-      let ab = this.$root.$data.audiobridge;
+      let ab = this.$store.state.audiobridge;
       const id = parseInt(this.id, 10);
       if (isNaN(id)) {
         console.error("This id is not a number : ", this.id);
         return;
       }
       let r;
-      console.log(this.$store.room.id);
-      if (this.$root.$data.room.id == "") {
+      console.log(this.$store.state.room.id);
+      if (this.$store.state.room.id == "") {
         r = ab.join({ room: id });
       } else {
         r = ab.changeroom({ room: id });
