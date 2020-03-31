@@ -4,11 +4,21 @@ Vue.component("room", {
     <div>
         <h4>Room {{ name }}</h4>
         {{ id }}
+        <ul>
+            <participant v-for="participant in participants"
+            v-bind:name="participant.display"
+            v-bind:key="participant.id"
+            v-bind:id="participant.id"
+            ></participant>
+        </ul>
     </div>
     `,
   computed: {
     name() {
       return this.$store.state.room.name;
+    },
+    participants() {
+        return this.$store.state.participants;
     }
   },
   watch: {
@@ -42,4 +52,9 @@ Vue.component("room", {
       );
     }
   }
+});
+
+Vue.component("participant", {
+  props: ["id", "name"],
+  template: `<li>{{ name }}#{{ id }}</li>`
 });
