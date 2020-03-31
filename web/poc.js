@@ -5,7 +5,10 @@ import { audiobridge, AudioBridgeBase } from '/js/init.js';
 const data = {
   rooms: Array,
   participants: Array,
-  room: Object,
+  room: {
+    name: "",
+    id: "",
+  },
 };
 
 const Home = {
@@ -53,9 +56,10 @@ class MyAudioBridge extends AudioBridgeBase {
         case "joined":
           if (msg.id) {
             console.log(`Room ${msg.room} with id ${msg.id}`);
-            data.room.id = msg.id;
-            data.room.name = msg.room;
-            data.participants = msg.participants;
+            console.dir(this.app);
+            this.app.room.id = msg.id;
+            this.app.room.name = msg.room;
+            this.app.participants = msg.participants;
             if (!this.webrtcUp) {
               this.webrtcUp = true;
               this.mixer.createOffer({
@@ -115,7 +119,7 @@ audiobridge(
 ).then(ab => {
   console.log("audiobridge is ready: ", ab);
   data.audiobridge = ab.audiobridge;
-  const app = new Vue({
+  ab.app = new Vue({
     data: data,
     router: router
   }).$mount("#app");
