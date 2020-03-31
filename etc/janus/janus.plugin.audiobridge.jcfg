@@ -36,10 +36,10 @@ general: {
 	sampling_rate = 16000
 }
 
-room-1234: {
-	description = "Demo Room"
-	secret = "adminpwd"
-	sampling_rate = 16000
-	record = false
-	#record_file = "/path/to/recording.wav"
-}
+#room-1234: {
+#	description = "Demo Room"
+#	secret = "adminpwd"
+#	sampling_rate = 16000
+#	record = false
+#	#record_file = "/path/to/recording.wav"
+#}
