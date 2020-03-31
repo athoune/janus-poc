@@ -1,5 +1,6 @@
 import "/js/modules/janus.js";
 import "/js/modules/rooms.js";
+import "/js/modules/room.js";
 import { audiobridge, AudioBridgeBase } from "/js/init.js";
 
 Vue.use(Vuex);
