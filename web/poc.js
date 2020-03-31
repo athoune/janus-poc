@@ -67,7 +67,6 @@ class MyAudioBridge extends AudioBridgeBase {
             console.log(`Room ${msg.room} with id ${msg.id}`);
             app.$store.state.room.id = msg.id;
             app.$store.state.room.name = msg.room;
-            app.$store.state.articipants = msg.participants;
             if (!this.webrtcUp) {
               this.webrtcUp = true;
               this.mixer.createOffer({
@@ -92,8 +91,8 @@ class MyAudioBridge extends AudioBridgeBase {
             }
           }
           if (msg.participants !== undefined && msg.participants !== null) {
-            for (let participant in msg.participants) {
-              console.log(participant);
+            for (let participant of msg.participants) {
+              app.$store.state.participants.push(participant);
             }
           }
           break;

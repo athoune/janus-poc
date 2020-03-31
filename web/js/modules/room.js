@@ -4,7 +4,7 @@ Vue.component("room", {
     <div>
         <h4>Room {{ name }}</h4>
         {{ id }}
-        <ul>
+        <ul id="participants">
             <participant v-for="participant in participants"
             v-bind:name="participant.display"
             v-bind:key="participant.id"
@@ -18,12 +18,12 @@ Vue.component("room", {
       return this.$store.state.room.name;
     },
     participants() {
-        return this.$store.state.participants;
+      return this.$store.state.participants;
     }
   },
   watch: {
     // call again the method if the route changes
-    $route: "fetchData",
+    $route: "fetchData"
   },
   created() {
     this.fetchData();
