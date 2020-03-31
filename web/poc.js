@@ -53,10 +53,9 @@ class MyAudioBridge extends AudioBridgeBase {
         case "joined":
           if (msg.id) {
             console.log(`Room ${msg.room} with id ${msg.id}`);
-            data.room = {
-              id: msg.id,
-              name: msg.room
-            };
+            data.room.id = msg.id;
+            data.room.name = msg.room;
+            data.participants = msg.participants;
             if (!this.webrtcUp) {
               this.webrtcUp = true;
               this.mixer.createOffer({

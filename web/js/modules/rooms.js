@@ -57,20 +57,35 @@ Vue.component("room", {
       name: ""
     };
   },
-  mounted: function() {
-    let ab = this.$root.$data.audiobridge;
-    const id = parseInt(this.id, 10);
-    if (isNaN(id)) {
+  watch: {
+    // call again the method if the route changes
+    $route: "fetchData",
+  },
+  created() {
+    this.fetchData();
+  },
+  methods: {
+    fetchData() {
+      let ab = this.$root.$data.audiobridge;
+      const id = parseInt(this.id, 10);
+      if (isNaN(id)) {
         console.error("This id is not a number : ", this.id);
         return;
-    }
-    console.log("joining ", id);
-    ab.join({ room: id }).then(
-      result => {
-      },
-      error => {
-        console.log(error);
       }
-    );
+      let r;
+      console.log(this.$root.$data.room.id);
+      if (this.$root.$data.room.id == "") {
+        r = ab.join({ room: id });
+      } else {
+        r = ab.changeroom({ room: id });
+      }
+      console.log("joining room ", id);
+      r.then(
+        result => {},
+        error => {
+          console.log(error);
+        }
+      );
+    }
   }
 });
