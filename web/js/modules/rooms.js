@@ -52,10 +52,6 @@ Vue.component("room", {
         {{ id }}
     </div>
     `,
-  data: () => {
-    return {
-    };
-  },
   computed: {
     name() {
       return this.$store.state.room.name;
