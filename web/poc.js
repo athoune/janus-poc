@@ -87,9 +87,7 @@ class MyAudioBridge extends AudioBridgeBase {
             }
           }
           if (msg.participants !== undefined && msg.participants !== null) {
-            for (let participant of msg.participants) {
-              app.$store.state.participants.push(participant);
-            }
+              app.$store.state.participants = msg.participants;
           }
           break;
         case "roomchanged":
