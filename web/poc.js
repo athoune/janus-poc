@@ -116,7 +116,7 @@ class MyAudioBridge extends AudioBridgeBase {
               app.$store.state.participants,
               app.$store.state.room.id
             );
-            if (app.$store.state.room.id == msg.room) {
+            if (app.$store.state.room.id == msg.room.toString()) {
               const poz = app.$store.state.participants.find(
                 e => e.id == msg.leaving
               );
