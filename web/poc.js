@@ -127,7 +127,7 @@ class MyAudioBridge extends AudioBridgeBase {
       }
     }
     if (jsep !== undefined && jsep !== null) {
-      console.log(jsep);
+      console.log("jsep", jsep);
       this.mixer.handleRemoteJsep({ jsep: jsep });
     }
   }
