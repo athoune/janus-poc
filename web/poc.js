@@ -69,7 +69,7 @@ class MyAudioBridge extends AudioBridgeBase {
                 media: {
                   audio: true,
                   video: false,
-                  data: true
+                  data: false,
                 },
                 success: jsep => {
                   that.mixer.send({
