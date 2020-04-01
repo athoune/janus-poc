@@ -14,6 +14,11 @@ export function newJanus(servers) {
       callback: () => {
         let janus = new Janus({
           server: servers,
+          iceServers: [
+            {
+              urls: "stun:stun.l.google.com:19302"
+            }
+          ],
           success: () => {
             resolve(janus);
           },
