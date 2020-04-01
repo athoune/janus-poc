@@ -27,6 +27,7 @@ export class AudioBridge {
   }
   join(args) {
     args.request = "join";
+    args.display = window.navigator.userAgent.split(" ").pop().split("/")[0];
     let that = this;
     return new Promise((resolve, reject) => {
       that.handle.send({
