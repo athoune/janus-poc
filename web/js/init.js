@@ -17,7 +17,7 @@ export function newJanus(servers) {
           iceServers: [
             {
               urls: [
-                "stun:blog.garambrogne.net",
+                "stun:blog.garambrogne.net"
                 /*"stun:stun.l.google.com:19302",
                 "stun:stun4.l.google.com:19302",
                 "stun:stunserver.org"*/
