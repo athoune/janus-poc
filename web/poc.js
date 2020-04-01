@@ -14,7 +14,8 @@ const store = new Vuex.Store({
     room: {
       name: "",
       id: ""
-    }
+    },
+    muted: false
   }
 });
 

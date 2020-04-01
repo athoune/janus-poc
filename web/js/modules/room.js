@@ -2,6 +2,7 @@ Vue.component("room", {
   props: ["id"],
   template: `
     <div>
+        <button v-on:click="mute">{{ muted }}</button>
         <h4>Room {{ name }}</h4>
         {{ id }}
         <ul id="participants">
@@ -19,6 +20,9 @@ Vue.component("room", {
     },
     participants() {
       return this.$store.state.participants;
+    },
+    muted() {
+        return this.$store.state.muted ? "unmute": "mute";
     }
   },
   watch: {
@@ -51,6 +55,22 @@ Vue.component("room", {
           console.log(error);
         }
       );
+    },
+    mute() {
+        let that = this;
+      this.$store.state.audiobridge
+        .configure({
+          muted: ! this.$store.state.muted
+        })
+        .then(
+          response => {
+            console.log(response);
+            that.$store.state.muted = ! that.$store.state.muted;
+          },
+          error => {
+            console.error(error);
+          }
+        );
     }
   }
 });

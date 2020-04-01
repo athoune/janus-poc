@@ -70,4 +70,15 @@ export class AudioBridge {
       });
     });
   }
+  configure(args) {
+    args.request = "configure";
+    let that = this;
+    return new Promise((resolve, reject) => {
+      that.handle.send({
+        message: args,
+        error: reject,
+        success: resolve
+      });
+    });
+  }
 }
