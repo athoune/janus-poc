@@ -54,6 +54,12 @@ export function audiobridge(servers, bridge, audio_id) {
       janus.attach({
         plugin: "janus.plugin.audiobridge",
         success: pluginHandle => {
+          Janus.listDevices(
+            devices => {
+              console.log("device", devices);
+            },
+            { video: false, audio: true }
+          );
           ab = new bridge(pluginHandle, audio_id);
           resolve(ab);
         },
