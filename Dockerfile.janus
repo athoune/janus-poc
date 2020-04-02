@@ -20,7 +20,9 @@ EXPOSE 8188
 # admin
 EXPOSE 7088
 
+COPY entrypoint.sh /entrypoint.sh
 COPY etc/janus /etc/janus
 USER janus
 
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["janus"]

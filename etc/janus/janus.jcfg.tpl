@@ -152,7 +152,7 @@ media: {
 # internal libnice debugging, if needed.
 nat: {
 	#stun_server = "stun.voip.eutelia.it"
-	stun_server = "blog.garambrogne.net"
+	stun_server = "xp.garambrogne.net"
 	stun_port = 3478
 	#stun_server = "" # Stolen here : https://gist.github.com/mondain/b0ec1cf5f60ae726202e
 	#stun_port = 3478
@@ -170,22 +170,22 @@ nat: {
 	# Make sure you keep ICE Lite disabled, though, as it's not strictly
 	# speaking a publicly reachable server, and a NAT is still involved.
 	#nat_1_1_mapping = "1.2.3.4"
-	nat_1_1_mapping = "$public_ip"
+	nat_1_1_mapping = "$PUBLIC_IP"
 
 	# You can configure a TURN server in two different ways: specifying a
 	# statically configured TURN server, and thus provide the address of the
 	# TURN server, the transport (udp/tcp/tls) to use, and a set of valid
 	# credentials to authenticate...
-	#turn_server = "myturnserver.com"
-	#turn_port = 3478
-	#turn_type = "udp"
-	#turn_user = "myuser"
+	turn_server = "xp.garambrogne.net"
+	turn_port = 3478
+	turn_type = "udp"
+	turn_user = "$TURN_USER"
 	#turn_pwd = "mypassword"
 	#turn_server = "blog.garambrogne.net"
 	#turn_port = 3478
 	#turn_type = "udp"
 	#turn_user = "myuser"
-	#turn_pwd = "$turn_pwd"
+	turn_pwd = "$TURN_CREDENTIAL"
 
 	# ... or you can make use of the TURN REST API to get info on one or more
 	# TURN services dynamically. This makes use of the proposed standard of
