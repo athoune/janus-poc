@@ -21,7 +21,8 @@ EXPOSE 8188
 EXPOSE 7088
 
 COPY entrypoint.sh /entrypoint.sh
-COPY etc/janus /etc/janus
+COPY --chown=janus etc/janus /etc/janus
+RUN touch /etc/janus/janus.jcfg && chmod 666 /etc/janus/janus.jcfg
 USER janus
 
 ENTRYPOINT ["/entrypoint.sh"]
