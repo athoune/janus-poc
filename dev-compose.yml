@@ -18,6 +18,10 @@ services:
       traefik.http.frontend.rule: Host:${DOMAIN};Path:/janus
       traefik.ws.port: "8188"
       traefik.ws.frontend.rule: Host:${DOMAIN};Headers:Upgrade,websocket
+    environment:
+      PUBLIC_IP: "${PUBLIC_IP}"
+      TURN_USER: "${TURN_USER}"
+      TURN_CREDENTIAL: "${TURN_CREDENTIAL}"
     restart: always
 
   web:
