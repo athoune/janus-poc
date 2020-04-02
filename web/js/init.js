@@ -14,14 +14,11 @@ export function newJanus(servers) {
       callback: () => {
         let janus = new Janus({
           server: servers,
-          iceServers: [
+          iceServers: [ // https://developer.mozilla.org/en-US/docs/Web/API/RTCIceServer
             {
-              urls: [
-                "turn:xp.garambrogne.net"
-                /*"stun:stun.l.google.com:19302",
-                "stun:stun4.l.google.com:19302",
-                "stun:stunserver.org"*/
-              ]
+              urls: "turn:xp.garambrogne.net",
+              username: "bob",
+              credential: "sponge"
             }
           ],
           success: () => {
