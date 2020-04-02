@@ -111,6 +111,9 @@ class MyAudioBridge extends AudioBridgeBase {
                 break;
             }
           }
+          if (msg.participants !== undefined) {
+            app.$store.state.articipants = msg.participants;
+          }
           if (msg.leaving !== undefined) {
             console.log(
               "leaving",

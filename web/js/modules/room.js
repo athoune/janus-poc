@@ -10,6 +10,7 @@ Vue.component("room", {
             v-bind:name="participant.display"
             v-bind:key="participant.id"
             v-bind:id="participant.id"
+            v-bind:muted="participant.muted"
             ></participant>
         </ul>
     </div>
@@ -75,6 +76,11 @@ Vue.component("room", {
 });
 
 Vue.component("participant", {
-  props: ["id", "name"],
-  template: `<li>{{ name }}#{{ id }}</li>`
+  props: ["id", "name", "muted"],
+  template: `<li>{{ name }}#{{ id }} {{ mic }}</li>`,
+  computed: {
+      mic() {
+        return this.muted ? "🔇" : "🔈";
+      }
+  }
 });
