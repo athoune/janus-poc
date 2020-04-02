@@ -1,4 +1,3 @@
-
 export class AudioBridge {
   constructor(pluginHandle) {
     this.handle = pluginHandle;
@@ -14,7 +13,8 @@ export class AudioBridge {
       });
     });
   }
-  changeroom(args) { // it returns nothing, watch for roomchanged event
+  changeroom(args) {
+    // it returns nothing, watch for roomchanged event
     args.request = "changeroom";
     let that = this;
     return new Promise((resolve, reject) => {
@@ -27,7 +27,10 @@ export class AudioBridge {
   }
   join(args) {
     args.request = "join";
-    args.display = window.navigator.userAgent.split(" ").pop().split("/")[0];
+    args.display = window.navigator.userAgent
+      .split(" ")
+      .pop()
+      .split("/")[0];
     let that = this;
     return new Promise((resolve, reject) => {
       that.handle.send({
@@ -70,15 +73,19 @@ export class AudioBridge {
       });
     });
   }
-  configure(args) {
+  configure(args, jsep) {
     args.request = "configure";
     let that = this;
     return new Promise((resolve, reject) => {
-      that.handle.send({
+      const msg = {
         message: args,
         error: reject,
         success: resolve
-      });
+      };
+      if (jsep != undefined) {
+        msg.jsep = jsep;
+      }
+      that.handle.send(msg);
     });
   }
 }

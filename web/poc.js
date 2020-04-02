@@ -60,7 +60,7 @@ class MyAudioBridge extends AudioBridgeBase {
       switch (event) {
         case "joined":
           if (msg.id) {
-            console.log(`Room ${msg.room} with id ${msg.id}`);
+            console.log(`Joined room ${msg.room} with id ${msg.id}`);
             app.$store.state.room.id = msg.id;
             app.$store.state.room.name = msg.room;
             if (!this.webrtcUp) {
@@ -72,13 +72,15 @@ class MyAudioBridge extends AudioBridgeBase {
                   data: false,
                 },
                 success: jsep => {
-                  that.mixer.send({
-                    message: {
-                      request: "configure",
-                      muted: false
+                  console.log("create offer done", jsep);
+                  that.audiobridge.configure({muted: false}).then(
+                    resp => {
+                      console.log("not muted", resp);
                     },
-                    jsep: jsep
-                  });
+                    cause => {
+                      console.error(cause);
+                    }
+                  )
                 },
                 error: error => {
                   console.error(error);

@@ -76,25 +76,43 @@ export function audiobridge(servers, bridge, audio_id) {
         onlocalstream: stream => {
           // We have a local stream (getUserMedia worked!) to display
           console.log("local stream", stream);
+          stream.onaddtrack = function(track) {
+            console.log("local track added", track, this);
+          };
         },
         onremotestream: stream => {
           // We have a remote stream (working PeerConnection!) to display
+          console.log(
+            "remote stream",
+            document.getElementById(ab.audio_id),
+            stream
+          );
           Janus.attachMediaStream(document.getElementById(ab.audio_id), stream);
-          console.log("remote stream", stream);
+          stream.onaddtrack = function(track) {
+            console.log("remote track added", track, this);
+          };
+          stream.onactive = function() {
+            console.log("remote track active", this);
+          };
         },
         oncleanup: () => {
           // PeerConnection with the plugin closed, clean the UI
           // The plugin handle is still valid so we can create a new one
+          console.log("cleanup");
         },
         detached: () => {
           // Connection with the plugin closed, get rid of its features
           // The plugin handle is not valid anymore
+          console.log("detached");
         },
         ondataopen: data => {
-          console.log("Data is open");
+          console.log("Data is open", data);
         },
         ondata: data => {
-          console.log("Data received");
+          console.log("Data received", data);
+        },
+        webrtcState: on => {
+          console.log("webrtc state ", on);
         }
       });
     });
