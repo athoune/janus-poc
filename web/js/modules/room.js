@@ -42,7 +42,6 @@ Vue.component("room", {
         return;
       }
       let r;
-      console.log(this.$store.state.room.id);
       if (this.$store.state.room.id == "") {
         r = ab.join({ room: id });
       } else {

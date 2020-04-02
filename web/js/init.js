@@ -68,7 +68,7 @@ export function audiobridge(servers, bridge, audio_id) {
         },
         error: cause => {
           // Couldn't attach to the plugin
-          console.log("error", cause);
+          console.error(cause);
         },
         consentDialog: on => {
           console.log("consent", on);
