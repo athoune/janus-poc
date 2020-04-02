@@ -27,6 +27,7 @@ Vue.component("rooms", {
   methods: {
     newRoom: function(name, event) {
       let ab = this.$store.state.audiobridge;
+      let that = this;
       ab.create({
         permanent: false,
         record: false,
@@ -38,7 +39,14 @@ Vue.component("rooms", {
           description: name
         });
         console.log("room created", result);
-        return ab.join({ room: result.room });
+        that.$router.push(`/room/${result.room}`);
+        if (this.$store.state.room.id == "") {
+          return ab.join({ room: result.room });
+        } else {
+          return ab.changeroom({ room: result.room });
+        }
+      }, cause => {
+        console.error(cause);
       });
     }
   }

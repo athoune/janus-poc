@@ -4,7 +4,6 @@ Vue.component("room", {
     <div>
         <button v-on:click="mute">{{ muted }}</button>
         <h4>Room {{ name }}</h4>
-        {{ id }}
         <ul id="participants">
             <participant v-for="participant in participants"
             v-bind:name="participant.display"
@@ -17,13 +16,18 @@ Vue.component("room", {
     `,
   computed: {
     name() {
-      return this.$store.state.room.name;
+      for (let room of this.$store.state.rooms) {
+        if (room.room.toString() == this.id) {
+          return room.description;
+        }
+      }
+      return "?";
     },
     participants() {
       return this.$store.state.participants;
     },
     muted() {
-        return this.$store.state.muted ? "unmute": "mute";
+      return this.$store.state.muted ? "unmute" : "mute";
     }
   },
   watch: {
@@ -57,15 +61,15 @@ Vue.component("room", {
       );
     },
     mute() {
-        let that = this;
+      let that = this;
       this.$store.state.audiobridge
         .configure({
-          muted: ! this.$store.state.muted
+          muted: !this.$store.state.muted
         })
         .then(
           response => {
             console.log(response);
-            that.$store.state.muted = ! that.$store.state.muted;
+            that.$store.state.muted = !that.$store.state.muted;
           },
           error => {
             console.error(error);
