@@ -46,19 +46,21 @@ Vue.component("room", {
         this.$router.push("/");
         return;
       }
-      let r;
-      if (this.$store.state.room.id == "") {
-        r = ab.join({ room: id });
-      } else {
-        r = ab.changeroom({ room: id });
-      }
-      console.log("joining room ", id);
-      r.then(
-        result => {},
-        error => {
-          console.log(error);
+      if (this.$store.state.room.id != id) {
+        let r;
+        if (this.$store.state.room.id == "") {
+          r = ab.join({ room: id });
+        } else {
+          r = ab.changeroom({ room: id });
         }
-      );
+        console.log("joining room ", id);
+        r.then(
+          result => {},
+          error => {
+            console.log(error);
+          }
+        );
+      }
     },
     mute() {
       let that = this;
@@ -83,8 +85,8 @@ Vue.component("participant", {
   props: ["id", "name", "muted"],
   template: `<li>{{ name }}#{{ id }} {{ mic }}</li>`,
   computed: {
-      mic() {
-        return this.muted ? "🔇" : "🔈";
-      }
+    mic() {
+      return this.muted ? "🔇" : "🔈";
+    }
   }
 });
